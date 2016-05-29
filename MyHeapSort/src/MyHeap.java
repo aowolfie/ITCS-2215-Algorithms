@@ -60,7 +60,7 @@ public class MyHeap<T extends Comparable> {
             T lValue = heap[lIndex];
             T rValue = null;
 
-            //check for and assign the right value
+            //Check for and assign the right value
             if (rIndex < size) {
                 rValue = heap[rIndex];
             }

@@ -5,7 +5,7 @@ import java.util.Random;
  */
 public final class HeapSort {
 
-    private static int size = 100000;
+    private static int size = 1000000;
 
 
     public static void main (String[] args) {
@@ -16,19 +16,18 @@ public final class HeapSort {
         }
 
         HeapSort.sortInteger(ints);
+
         for (Integer val: ints){
             System.out.println(val);
         }
 
     }
 
-    public static Integer[] sortInteger(Integer[] array){
+    public static void sortInteger(Integer[] array){
         MyHeap heap = new MyHeap(Integer.class, array);
 
         for (int i = 0; i < array.length; i++) {
             array[i] = (Integer) heap.remove();
         }
-
-        return array;
     }
 }

@@ -3,8 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ITCS-2215-Algorithms.iml" filepath="$PROJECT_DIR$/ITCS-2215-Algorithms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" filepath="$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" filepath="$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" filepath="$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" />
-      <module fileurl="file://$PROJECT_DIR$/project1_heap_sort/project1_heap_sort.iml" filepath="$PROJECT_DIR$/project1_heap_sort/project1_heap_sort.iml" />
     </modules>
   </component>
 </project>
