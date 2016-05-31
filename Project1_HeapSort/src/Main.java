@@ -1,11 +1,11 @@
 /**
  * Created by brandonbeckwith on 5/28/16.
  *
- * The main class used to create and execute the Heap
+ * The main class used to test the heap and heap sort
  */
 public class Main {
 
-    //Generic main code for the prject from moodle
+    //Generic main code for the project from Moodle
     public static void main (String[] args){
         Heap myHeap = new Heap("input.txt");
 

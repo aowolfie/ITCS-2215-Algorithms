@@ -12,29 +12,34 @@ import java.util.Scanner;
 public class Heap {
 
     private int[] heap;
+    private boolean valid = false; //Used to exclude the size stored at heap[0]
 
     /**
      * When given a file name this constructor populates and builds
      * a heap based on the contents of the file. The file must be in
-     * the same directory of the class or else it will throw an error.
-     * @param filename The name of the file to be inputted
+     * the same directory, or subdirectory with a relative path,
+     * of the class or else it will throw an error.
+     *
+     * @param filename the name of the file to be inputted
      */
     public Heap(String filename) {
-        //Use an arrayList to read in data, this makes it easier
-        //because we don't know the number of elements yet
+        /*
+          Use an arrayList to read in data, this makes it easier
+          because we don't know the number of elements yet
+        */
         ArrayList<Integer> temp = new ArrayList<Integer>();
 
         //Read the file and populate the arrayList
         try {
             /*
-                NOTE: This is relative, the file has to be in the same directory!
+                NOTE: This is a relative path
              */
             Scanner scan = new Scanner(Heap.class.getResourceAsStream(filename));
             while(scan.hasNextInt()) {
                 temp.add(scan.nextInt());
             }
         } catch (Exception e) {
-            System.out.println("The file wasn't found, it probably wasn't in the same directory as the class!");
+            System.out.println("File not found.");
             e.printStackTrace();
         }
 
@@ -51,15 +56,18 @@ public class Heap {
 
     /**
      * Outputs the contents of the array starting at index 0
-     * @param filename The file to output to
+     * @param filename the file to output to
      */
     public void outputResult(String filename) {
         try {
+
             PrintStream out = new PrintStream(new FileOutputStream(filename));
 
-            for (int i=0; i <heap.length; i++){
+            //If the heap is valid, exclude the size stored at 0
+            for (int i=(valid? 1: 0); i <heap.length; i++){
                 out.println(heap[i]);
             }
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -103,15 +111,7 @@ public class Heap {
     }
 
     /**
-     * @return the heap array
-     */
-    public int[] getHeap(){
-        return heap;
-    }
-
-    /**
-     * Preforms a heap sort on the array, then
-     * marks it as no longer valid
+     * Performs a heap sort on the array
      */
     public void heapSort() {
         int[] rA = new int[heap[0]];
@@ -119,6 +119,7 @@ public class Heap {
             rA[i] = removeMaxElement();
         }
         heap = rA;
+        valid = false;
     }
 
     /**
@@ -128,6 +129,7 @@ public class Heap {
         for (int i=heap[0]/2; i >= 1; i--){
             heapify(i);
         }
+        valid = true;
     }
 
     /**
@@ -136,13 +138,13 @@ public class Heap {
      */
     private void heapify(int parent) {
 
-        int child = parent * 2;
-        int right = child + 1;
+        int left = parent * 2;
+        int right = left + 1;
 
         int swap = parent;
 
-        if (child < heap[0] && heap[child] > heap[swap]){
-            swap = child;
+        if (left < heap[0] && heap[left] > heap[swap]){
+            swap = left;
         }
 
         if (right < heap[0] && heap[right] > heap[swap]){
@@ -165,5 +167,4 @@ public class Heap {
         heap[f] = heap[s];
         heap[s] = temp;
     }
-
 }
