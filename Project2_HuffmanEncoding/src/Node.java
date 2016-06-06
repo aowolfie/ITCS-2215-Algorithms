@@ -4,7 +4,7 @@
 public class Node implements Comparable {
 
 
-    private Node parent, left, right;
+    private Node left, right;
 
     private int value;
 
@@ -16,14 +16,6 @@ public class Node implements Comparable {
     public Node(int value, char c){
         this.value = value;
         this.character = c;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
     }
 
     public Node getLeft() {

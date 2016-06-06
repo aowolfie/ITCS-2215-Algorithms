@@ -1,5 +1,7 @@
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 /**
  * Created by brandonbeckwith on 6/3/16.
@@ -8,9 +10,7 @@ import java.util.LinkedList;
 public class HEncode {
 
     private String inputString;
-    private HashMap<Character, Integer> cMap = new HashMap<Character, Integer>();
     private char[] inputArray;
-    private Node[] nodes;
 
     private final String HEAD_ID =  "--blueHuffmanEncode--";
     private final String OPEN_ID =  "--[[";
@@ -25,9 +25,9 @@ public class HEncode {
         if (decode){
             return;
         }
-        generateFrequencies();
-        nodes = generateNodeArray();
-        generateTree();
+
+        generateTree(generateFrequencies());
+
         System.out.println("Done!");
     }
 
@@ -42,8 +42,9 @@ public class HEncode {
     /**
      * Calculates the frequencies used in our Huffman Encoding
      */
-    private void generateFrequencies(){
+    private HashMap<Character, Integer> generateFrequencies(){
         System.out.println("Generating frequencies!");
+        HashMap<Character, Integer> cMap = new HashMap<Character, Integer>();
 
         for (int i=0; i < inputArray.length; i++){
             if (cMap.containsKey(inputArray[i])) {
@@ -59,67 +60,51 @@ public class HEncode {
             int i = cMap.get(c);
             System.out.println("[" + c + "]" + "...." + i);
         }
-    }
-
-    /**
-     * Generates a node arraylist, then converts it to an array
-     * @return a node array;
-     */
-    private Node[] generateNodeArray(){
-        System.out.println("Generating the node array");
-        LinkedList<Node> nodeList = new LinkedList<Node>();
-        for (char c: cMap.keySet()){
-            nodeList.add(new Node(cMap.get(c),c));
-        }
-        System.out.println("Done!");
-
-        for (Node n: nodeList){
-            System.out.println(n);
-        }
-        return nodeList.toArray(new Node[nodeList.size()]);
+        return cMap;
     }
 
     //Generate the tree required for huffman encoding!
-    private void generateTree(){
+    private Node generateTree(HashMap<Character, Integer> map){
 
-        //record the initial length
-        int size = nodes.length;
+        PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
 
-        while (size > 1) {
-            int index1, index2;
-            index1 = 0;
-            index2 = 1;
-
-            for (int i=0; i < size; i++){
-                if (nodes[index1].getValue() > nodes[index2].getValue() && nodes[index1].getValue() > nodes[i].getValue()){
-                    index1 = i;
-                } else if (nodes[index2].getValue() > nodes[index2].getValue() && nodes[index1].getValue() > nodes[i].getValue()){
-                    index2 = i;
-                }
-            }
-
-            //Create a new node with both values, and assign its children
-            Node temp = new Node(nodes[index1].getValue() + nodes[index2].getValue());
-            temp.setLeft(nodes[index1]);
-            temp.setRight(nodes[index2]);
-
-
-             if (index1 > index2){
-                nodes[index2] = temp;
-                exchange(index1, size-1);
-                nodes[size-1] = null;
-            } else {
-                nodes[index1] = temp;
-                exchange(index2, size-1);
-                nodes[size-1] = null;
-            }
-            size--;
+        for (Character c: map.keySet()){
+            pQueue.add(new Node(map.get(c),c));
         }
+
+        while (pQueue.size() > 1){
+            Node l = pQueue.poll();
+            Node r = pQueue.poll();
+            Node temp = new Node(l.getValue() + r.getValue());
+            temp.setLeft(l);
+            temp.setRight(r);
+            pQueue.add(temp);
+        }
+
+        printLevelOrder(pQueue.poll());
+
+        return pQueue.poll();
     }
 
-    private void exchange(int f,int s){
-        Node temp = nodes[f];
-        nodes[f] = nodes[s];
-        nodes[s] = temp;
+
+
+    /**
+     * Prints the level order using a queue
+     * @param root the root of the tree
+     */
+    public void printLevelOrder(Node root){
+        Queue<Node> q = new LinkedList<Node>();
+        q.add(root);
+
+        while (!q.isEmpty()){
+            Node tempNode = q.poll();
+            System.out.println(tempNode);
+            if (tempNode.getLeft() != null) {
+                q.add(tempNode.getLeft());
+            }
+            if (tempNode.getRight() != null) {
+                q.add(tempNode.getRight());
+            }
+        }
     }
 }
