@@ -10,6 +10,7 @@ public class Node implements Comparable {
 
     private char character;
 
+
     public Node(int value){
         this.value = value;
     }

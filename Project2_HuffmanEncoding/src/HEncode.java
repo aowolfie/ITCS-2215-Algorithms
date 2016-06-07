@@ -1,7 +1,5 @@
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 /**
  * Created by brandonbeckwith on 6/3/16.
@@ -9,8 +7,8 @@ import java.util.Queue;
  */
 public class HEncode {
 
-    private String inputString;
     private char[] inputArray;
+    private HashMap<Character, String> codes = new HashMap<Character, String>();
 
     private final String HEAD_ID =  "--blueHuffmanEncode--";
     private final String OPEN_ID =  "--[[";
@@ -18,26 +16,28 @@ public class HEncode {
 
     private boolean decode = false;
 
-    public HEncode (String string){
-        inputString = string;
-        inputArray = string.toCharArray();
-        decode = checkFile();
-        if (decode){
-            return;
+    public HEncode (String input, String fileName){
+        inputArray = input.toCharArray();
+
+        Node root = generateTree(generateFrequencies());
+
+        generateCodes(root, codes, "");
+
+        byte[] temp = encode();
+        /*
+        try {
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(fileName));
+            for (char c: tC) {
+                out.writeBoolean(c == '1');
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        generateTree(generateFrequencies());
-
-        System.out.println("Done!");
+        */
+        System.out.println(temp);
+        System.out.println("Done");
     }
 
-    /**
-     * Checks if the file contains our header, this means to unencode;
-     * @return
-     */
-    private boolean checkFile(){
-        return inputString.contains(HEAD_ID);
-    }
 
     /**
      * Calculates the frequencies used in our Huffman Encoding
@@ -72,7 +72,7 @@ public class HEncode {
             pQueue.add(new Node(map.get(c),c));
         }
 
-        while (pQueue.size() > 1){
+        while (pQueue.size() > 1) {
             Node l = pQueue.poll();
             Node r = pQueue.poll();
             Node temp = new Node(l.getValue() + r.getValue());
@@ -81,30 +81,51 @@ public class HEncode {
             pQueue.add(temp);
         }
 
-        printLevelOrder(pQueue.poll());
-
         return pQueue.poll();
     }
 
 
-
-    /**
-     * Prints the level order using a queue
-     * @param root the root of the tree
-     */
-    public void printLevelOrder(Node root){
-        Queue<Node> q = new LinkedList<Node>();
-        q.add(root);
-
-        while (!q.isEmpty()){
-            Node tempNode = q.poll();
-            System.out.println(tempNode);
-            if (tempNode.getLeft() != null) {
-                q.add(tempNode.getLeft());
-            }
-            if (tempNode.getRight() != null) {
-                q.add(tempNode.getRight());
-            }
+    private void generateCodes(Node node, HashMap<Character, String> map, String string){
+        System.out.println();
+        if (node.getRight() == null && node.getLeft() == null){
+            map.put(node.getCharacter(), string);
+            return;
         }
+
+        generateCodes(node.getLeft(), map, string + "0");
+        generateCodes(node.getRight(), map, string + "1");
+    }
+
+    private byte[] encode(){
+        String s = "";
+
+        for (char c: inputArray){
+            s += codes.get(c);
+        }
+
+        int size = s.length();
+        int index = 0;
+
+        byte[] bytes = new byte[size / 7 + (size % 7 == 0? 0: 1)];
+
+        while ((index+1) *7 < size){
+
+            String temp = s.substring(index * 7, (index+1) * 7);
+            bytes[index] = (Byte.parseByte(temp, 2));
+            System.out.println(bytes[index]);
+            index++;
+
+        }
+
+        if (size%7 != 0){
+            String temp = s.substring(index * 7, size);
+            bytes[index] = (Byte.parseByte(temp, 2));
+        }
+
+        byte b1 = bytes[index];
+        String s1 = String.format("%8s", Integer.toBinaryString(b1 & 0xFF)).replace(' ', '0');
+        System.out.println(s1);
+
+        return bytes;
     }
 }
