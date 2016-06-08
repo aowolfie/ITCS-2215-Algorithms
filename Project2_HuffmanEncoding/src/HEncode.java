@@ -106,19 +106,19 @@ public class HEncode {
         int size = s.length();
         int index = 0;
 
-        byte[] bytes = new byte[size / 7 + (size % 7 == 0? 0: 1)];
+        byte[] bytes = new byte[(size + 7)];
 
-        while ((index+1) *7 < size){
+        while ((index+1) *8 < size){
 
-            String temp = s.substring(index * 7, (index+1) * 7);
-            bytes[index] = (Byte.parseByte(temp, 2));
+            String temp = s.substring(index * 8, (index+1) * 8);
+            bytes[index] = (byte) (Integer.parseInt(temp,2) - 128);
             System.out.println(bytes[index]);
             index++;
 
         }
 
         if (size%7 != 0){
-            String temp = s.substring(index * 7, size);
+            String temp = s.substring(index * 8, size);
             bytes[index] = (Byte.parseByte(temp, 2));
         }
 
