@@ -14,6 +14,13 @@ public class Node implements Comparable {
     public Node(int value){
         this.value = value;
     }
+
+    public Node(int value, Node left, Node right){
+        this.value = value;
+        this.left = left;
+        this.right = right;
+    }
+
     public Node(int value, char c){
         this.value = value;
         this.character = c;

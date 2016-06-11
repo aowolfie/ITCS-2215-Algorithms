@@ -1,3 +1,6 @@
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -7,42 +10,66 @@ import java.util.PriorityQueue;
  */
 public class HEncode {
 
-    private char[] inputArray;
-    private HashMap<Character, String> codes = new HashMap<Character, String>();
+    public static void handleFile(String fileName){
+        if (fileName.contains(".data") || fileName.contains(".hec")) {
+            decodeFile(fileName.substring(0, fileName.indexOf('.')));
+        } else if (fileName.contains(".txt")){
+            encodeFile(fileName);
+        }
+    }
 
-    private final String HEAD_ID =  "--blueHuffmanEncode--";
-    private final String OPEN_ID =  "--[[";
-    private final String CLOSE_ID = "]]--";
 
-    private boolean decode = false;
+    /**
+     * Given a file name, produces the huffman encoded file with
+     * an extra file used to store the huffman codes
+     *
+     * @param name The name of the file to encode with the appropriate endings
+     */
+    private static void encodeFile(String name){
+        char[] inputArray = null;
 
-    public HEncode (String input, String fileName){
-        inputArray = input.toCharArray();
+        System.out.println("Beginning encoding!");
+        try {
+            inputArray = readUnencodedFile(name).toCharArray();
+        } catch (Exception e) {
+            System.out.println("File not readable, stopping encoding process.");
+            return;
+        }
 
-        Node root = generateTree(generateFrequencies());
+        Node root = generateTree(generateFrequencies(inputArray));
+        HashMap<Character, String> codes = new HashMap<Character, String>();
 
         generateCodes(root, codes, "");
+        byte[] encodedString = encodeArray(inputArray,codes);
+        writeEncodedToFile(name.substring(0,name.length()-4), codes, encodedString);
 
-        byte[] temp = encode();
-        /*
-        try {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(fileName));
-            for (char c: tC) {
-                out.writeBoolean(c == '1');
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
-        System.out.println(temp);
         System.out.println("Done");
+    }
+
+    /**
+     * Decodes a given file, used the .data to build a hashmap of huffman codes
+     * and parses the .hec file to a binary string, which is then decoded.
+     * @param name The name of the file to decode without endings
+     */
+    private static void decodeFile(String name){
+        byte[] bytes;
+        String rawCodes;
+        try{
+            bytes = readEncodedFile(name + ".hec");
+            rawCodes = readUnencodedFile(name + ".data");
+        } catch (Exception e){
+            System.out.println("Error reading in file");
+            return;
+        }
+        HashMap<String, Character> codes = buildCodex(rawCodes);
+        writeUnencodedToFile(name, decodeString(byteArrayToBinaryString(bytes), codes));
     }
 
 
     /**
      * Calculates the frequencies used in our Huffman Encoding
      */
-    private HashMap<Character, Integer> generateFrequencies(){
+    private static HashMap<Character, Integer> generateFrequencies(char[] inputArray){
         System.out.println("Generating frequencies!");
         HashMap<Character, Integer> cMap = new HashMap<Character, Integer>();
 
@@ -63,9 +90,13 @@ public class HEncode {
         return cMap;
     }
 
-    //Generate the tree required for huffman encoding!
-    private Node generateTree(HashMap<Character, Integer> map){
 
+    /**
+     * Generates the Huffman Tree
+     * @param map The hashmap that contains the characters
+     * @return the top of the tree
+     */
+    private static Node generateTree(HashMap<Character, Integer> map){
         PriorityQueue<Node> pQueue = new PriorityQueue<Node>();
 
         for (Character c: map.keySet()){
@@ -75,9 +106,7 @@ public class HEncode {
         while (pQueue.size() > 1) {
             Node l = pQueue.poll();
             Node r = pQueue.poll();
-            Node temp = new Node(l.getValue() + r.getValue());
-            temp.setLeft(l);
-            temp.setRight(r);
+            Node temp = new Node(l.getValue() + r.getValue(), l, r);
             pQueue.add(temp);
         }
 
@@ -85,9 +114,15 @@ public class HEncode {
     }
 
 
-    private void generateCodes(Node node, HashMap<Character, String> map, String string){
-        System.out.println();
+    /**
+     * Uses recursion to generate the Huffman Codes
+     * @param node The node which yields the next two children
+     * @param map The map used to store the proper character with its string code
+     * @param string The current string code
+     */
+    private static void generateCodes(Node node, HashMap<Character, String> map, String string){
         if (node.getRight() == null && node.getLeft() == null){
+            System.out.println(node + "       <" + string + ">");
             map.put(node.getCharacter(), string);
             return;
         }
@@ -96,7 +131,14 @@ public class HEncode {
         generateCodes(node.getRight(), map, string + "1");
     }
 
-    private byte[] encode(){
+
+    /**
+     * Encodes a character array to a byte array using huffman encoding
+     * @param inputArray A character array
+     * @param codes The huffman codes
+     * @return a byte array containing the encoded string
+     */
+    private static byte[] encodeArray(char[] inputArray, HashMap<Character, String> codes){
         String s = "";
 
         for (char c: inputArray){
@@ -106,20 +148,21 @@ public class HEncode {
         int size = s.length();
         int index = 0;
 
-        byte[] bytes = new byte[(size + 7)];
+        byte[] bytes = new byte[(size + 15)/8];
 
-        while ((index+1) *8 < size){
-
+        while ((index+1) * 8 < size){
             String temp = s.substring(index * 8, (index+1) * 8);
             bytes[index] = (byte) (Integer.parseInt(temp,2) - 128);
-            System.out.println(bytes[index]);
             index++;
-
         }
 
-        if (size%7 != 0){
+        if (size%8 != 0){
             String temp = s.substring(index * 8, size);
-            bytes[index] = (Byte.parseByte(temp, 2));
+            bytes[index] = (byte) ((Integer.parseInt(temp,2) << (8 - (size%8))) - 128);
+            bytes[index+1] = (byte) (8 - (size%8));
+        } else {
+            bytes[index] = 0;
+            bytes[index + 1] = 0;
         }
 
         byte b1 = bytes[index];
@@ -127,5 +170,140 @@ public class HEncode {
         System.out.println(s1);
 
         return bytes;
+    }
+
+    /**
+     * Used to write the encoded byte array and codes to two files.
+     * Codes are written to a .data file and the byte array is written
+     * to a .hec file
+     *
+     * @param name The name of the file to write too
+     * @param codes The huffman codes
+     * @param bytes The encoded byte array
+     */
+    private static void writeEncodedToFile(String name, HashMap<Character, String> codes, byte[] bytes){
+        try {
+
+            //Write the characters to the .data file
+            PrintStream print = new PrintStream(name + ".data");
+            print.print('^');
+            for (char c: codes.keySet()){
+                print.print(c + codes.get(c) + "^");
+            }
+            print.flush();
+            print.close();
+
+            //Write the byte array to a .hec file
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(name + ".hec"));
+            out.write(bytes);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Builds the huffman hashmap from the .data file contents
+     * @param rawCodes The raw string of huffman codes
+     * @return A hashmap of codes and characters
+     */
+    private static HashMap<String, Character> buildCodex(String rawCodes){
+        HashMap<String, Character>  codes = new HashMap<String, Character>();
+        int index = 0;
+        int size = rawCodes.length();
+        while (index < size - 1){
+            char c = rawCodes.charAt(index + 1);
+            String code = rawCodes.substring(index + 2, rawCodes.indexOf('^', index + 1));
+            index = rawCodes.indexOf('^', index + 1);
+            System.out.println(c + ".....<" + code + ">");
+            codes.put(code, c);
+        }
+        return codes;
+    }
+
+    /**
+     * Converts a byte array to the binary string representation of it
+     * @param bytes the byte array to convert
+     * @return a binary string
+     */
+    private static String byteArrayToBinaryString(byte[] bytes){
+        String s = "";
+
+        for (int i=0; i < bytes.length - 1; i++){
+            String temp = String.format("%8s", Integer.toBinaryString((bytes[i] + 128) & 0xFF)).replace(' ', '0');
+
+            if (i == bytes.length - 2){
+                temp = temp.substring(0, bytes[i + 1]);
+            }
+
+            s += temp;
+        }
+        return s;
+    }
+
+    /**
+     * Decodes a binary string given a hasmap of codes
+     * @param string the string to decode
+     * @param codes The hashmap of codes
+     * @return unencoded text
+     */
+    private static String decodeString(String string, HashMap<String, Character> codes){
+        String decoded = "";
+        int index = 0;
+        int size = string.length();
+        String temp = "";
+
+        while (index < size-1){
+            temp += string.charAt(index);
+            System.out.println(temp);
+
+            if (codes.containsKey(temp)){
+                decoded += codes.get(temp);
+                temp = "";
+            }
+            index++;
+        }
+
+        return decoded;
+    }
+
+    /**
+     * Writes an unencoded string to a file.
+     * @param name the name of the file
+     * @param string the string to write
+     */
+    private static void writeUnencodedToFile(String name, String string){
+        try{
+            PrintStream stream = new PrintStream("unencoded_"+ name + ".txt");
+            stream.print(string);
+        } catch (Exception e){
+
+        }
+    }
+
+    /**
+     * Reads unencoded files
+     * @param name the name of the file
+     * @return the contents of the file as a string
+     * @throws Exception if the file cannot be opened or read
+     */
+    private static String readUnencodedFile(String name) throws Exception {
+        File file = new File(name);
+        FileInputStream stream = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        stream.read(data);
+        stream.close();
+        return new String(data, "UTF-8");
+    }
+
+    /**
+     * Reads a file as a byte array
+     * @param name the name of the file
+     * @return the contents of the file as a byte array
+     * @throws Exception if the file cannot be opened or read
+     */
+    private static byte[] readEncodedFile(String name) throws Exception {
+        return Files.readAllBytes(Paths.get(name));
     }
 }
