@@ -52,6 +52,7 @@ public class HEncode {
      * @param name The name of the file to decode without endings
      */
     private static void decodeFile(String name){
+        System.out.println("Beginning Decoding!");
         byte[] bytes;
         String rawCodes;
         try{
@@ -63,6 +64,7 @@ public class HEncode {
         }
         HashMap<String, Character> codes = buildCodex(rawCodes);
         writeUnencodedToFile(name, decodeString(byteArrayToBinaryString(bytes), codes));
+        System.out.println("Done!");
     }
 
 
@@ -165,10 +167,6 @@ public class HEncode {
             bytes[index + 1] = 0;
         }
 
-        byte b1 = bytes[index];
-        String s1 = String.format("%8s", Integer.toBinaryString(b1 & 0xFF)).replace(' ', '0');
-        System.out.println(s1);
-
         return bytes;
     }
 
@@ -256,7 +254,6 @@ public class HEncode {
 
         while (index < size-1){
             temp += string.charAt(index);
-            System.out.println(temp);
 
             if (codes.containsKey(temp)){
                 decoded += codes.get(temp);

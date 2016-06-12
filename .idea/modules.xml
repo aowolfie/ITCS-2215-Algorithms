@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" filepath="$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" />
       <module fileurl="file://$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" filepath="$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" />
       <module fileurl="file://$PROJECT_DIR$/Project2_HuffmanEncoding/Project2_HuffmanEncoding.iml" filepath="$PROJECT_DIR$/Project2_HuffmanEncoding/Project2_HuffmanEncoding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProjectB1_SkipList/ProjectB1_SkipList.iml" filepath="$PROJECT_DIR$/ProjectB1_SkipList/ProjectB1_SkipList.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" filepath="$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectTreeInClass/ProjectTreeInClass.iml" filepath="$PROJECT_DIR$/ProjectTreeInClass/ProjectTreeInClass.iml" />
     </modules>
