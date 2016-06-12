@@ -6,10 +6,24 @@ import java.util.PriorityQueue;
 
 /**
  * Created by brandonbeckwith on 6/3/16.
+ * This class handles text file and encodes or decodes
+ * them based on their file extention.
  *
+ * If the file is a normal .txt file it will be encoded
+ * using Huffman Encoding. Then the encoding will be written to a
+ * .hec file as bytes. A .data file is used to store the codes
+ * required to decode.
+ *
+ * If a file ending in .hec or .data is given it will try to locate
+ * the file's partner and decode the file. The unencoded file will
+ * be saved as a .txt file.
  */
 public class HEncode {
 
+    /**
+     * Decodes or encodes the file based on its extension.
+     * @param fileName
+     */
     public static void handleFile(String fileName){
         if (fileName.contains(".data") || fileName.contains(".hec")) {
             decodeFile(fileName.substring(0, fileName.indexOf('.')));
@@ -83,12 +97,8 @@ public class HEncode {
             }
         }
 
-        System.out.println("Done, printing frequencies!");
+        System.out.println("Done!");
 
-        for (char c: cMap.keySet()){
-            int i = cMap.get(c);
-            System.out.println("[" + c + "]" + "...." + i);
-        }
         return cMap;
     }
 
@@ -146,6 +156,9 @@ public class HEncode {
         for (char c: inputArray){
             s += codes.get(c);
         }
+
+        int saved = inputArray.length - ((s.length() + 8)/7);
+        System.out.println("By encoding we saved " + saved + " bytes without including the codes required to decode!");
 
         int size = s.length();
         int index = 0;

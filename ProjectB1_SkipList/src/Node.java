@@ -57,4 +57,8 @@ public class Node {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "[" + this.getValue() + "]";
+    }
 }

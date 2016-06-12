@@ -1,5 +1,7 @@
 /**
  * Created by brandonbeckwith on 6/3/16.
+ *
+ * Simple node class required to build the Huffman tree
  */
 public class Node implements Comparable {
 
