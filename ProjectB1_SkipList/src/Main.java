@@ -25,10 +25,12 @@ public class Main {
             e.printStackTrace();
         }
 
-        SkipList skippy = new SkipList(temp.remove(1), temp.remove(1));
+        SkipList skippy = new SkipList(temp.remove(0), temp.remove(0));
 
         for (int i: temp){
             skippy.add(i);
+            skippy.printLevels();
+            System.out.println("===============================================================");
         }
 
         skippy.printLevels();

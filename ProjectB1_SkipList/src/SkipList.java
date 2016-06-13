@@ -33,10 +33,10 @@ public class SkipList {
             Node temp = head;
 
             //Add all the head's child nodes
-            while (temp.getChild() != null) {
+            do {
                 visited.add(temp);
                 temp = temp.getChild();
-            }
+            } while (temp != null);
 
             //Use this to calculate the chance on whether or not to increase the height
             double chance = Math.pow(.5, visited.size());
@@ -46,21 +46,21 @@ public class SkipList {
                 temp = new Node(num);
                 linkV(temp, lastChild);
                 linkH(temp, visited.remove(visited.size() - 1));
+                if (visited.isEmpty()) {
+                    head = temp;
+                }
+                lastChild=temp;
             }
 
             //using the chance calculated above generate new layers
             while (Math.random() < chance) {
                 temp = new Node(num);
-                linkV(temp, lastChild);
-                lastChild = temp;
-                temp = new Node(head.getValue());
                 linkV(temp, head);
-                linkH(lastChild, temp);
                 head = temp;
                 temp = new Node(tail.getValue());
                 linkV(temp, tail);
-                linkH(head, temp);
                 tail = temp;
+                linkH(head, tail);
                 levels++;
             }
         } else {
@@ -70,9 +70,6 @@ public class SkipList {
             while (level > 0) {
 
                 while (current.getRight() != null && current.getRight().getValue() < num) {
-                    if (current.getValue() == tail.getValue()){
-                        break;
-                    }
                     current = current.getRight();
                 }
 
@@ -88,13 +85,17 @@ public class SkipList {
 
             //Once all the nodes have been found, begin populating up the tree
             while (!visited.isEmpty()) {
-                if (level == 1 || Math.random() < .50D || num > tail.getValue()) {
+                if (level == 1 || Math.random() < .50D || num >= tail.getValue()) {
                     current = visited.remove(visited.size() - 1);
                     Node temp = new Node(num);
                     linkV(temp, lastChild);
                     linkH(temp, current.getRight());
                     linkH(current, temp);
                     lastChild = temp;
+                    if (tail.getRight() != null){
+                        tail = tail.getRight();
+                    }
+                    level++;
                 } else {
                     break;
                 }
@@ -115,7 +116,7 @@ public class SkipList {
                     tail = temp;
                     levels++;
                 }
-            } else {
+            } else if (visited.isEmpty()){
                 while (Math.random() < chance) {
                     Node temp = new Node(head.getValue());
                     linkV(temp, head);
