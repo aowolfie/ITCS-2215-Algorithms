@@ -157,6 +157,7 @@ public class HEncode {
             s += codes.get(c);
         }
 
+        //Calculate and print out the number of bytes saved
         int saved = inputArray.length - ((s.length() + 8)/7);
         System.out.println("By encoding we saved " + saved + " bytes without including the codes required to decode!");
 
@@ -165,6 +166,7 @@ public class HEncode {
 
         byte[] bytes = new byte[(size + 15)/8];
 
+        //Parse the file to a byte array
         while ((index+1) * 8 < size){
             String temp = s.substring(index * 8, (index+1) * 8);
             bytes[index] = (byte) (Integer.parseInt(temp,2) - 128);
@@ -173,11 +175,12 @@ public class HEncode {
 
         if (size%8 != 0){
             String temp = s.substring(index * 8, size);
+            //The shift makes it easier to decode later
             bytes[index] = (byte) ((Integer.parseInt(temp,2) << (8 - (size%8))) - 128);
-            bytes[index+1] = (byte) (8 - (size%8));
+            bytes[index+1] = (byte) (8 - (size%8)); //This is how many spaces to remove from the end
         } else {
             bytes[index] = 0;
-            bytes[index + 1] = 0;
+            bytes[index + 1] = 8;
         }
 
         return bytes;

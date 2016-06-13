@@ -1,10 +1,11 @@
 /**
  * Created by brandonbeckwith on 6/3/16.
  *
+ * First it encodes a file, then it decodes the file
  */
 public class Main {
 
-    private static final String FILE_NAME = "input";
+    private static final String FILE_NAME = "input"; //This is just some randomly generated text.
 
     public static void main(String[] args){
 
