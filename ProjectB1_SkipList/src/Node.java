@@ -1,5 +1,7 @@
 /**
  * Created by Brandon on 6/11/2016.
+ *
+ * Simple node class used by the skiplist.
  */
 public class Node {
 

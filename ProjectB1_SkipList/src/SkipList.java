@@ -3,6 +3,7 @@ import java.util.ArrayList;
 /**
  * Created by Brandon on 6/11/2016.
  *
+ * A class that is used to generate skiplists.
  */
 public class SkipList {
 
@@ -21,6 +22,13 @@ public class SkipList {
         linkH(head, tail);
     }
 
+    /**
+     * Adds a new node to the skip list,
+     * if its before the head node it re assigns the head node to the new value,
+     * if its after the tail node it re assigns the tail node to the new value.
+     * Otherwise nodes have a 50% chance to grow to the level above them.
+     * @param num
+     */
     public void add(int num) {
         int level = levels;
 
@@ -52,7 +60,7 @@ public class SkipList {
                 lastChild=temp;
             }
 
-            //using the chance calculated above generate new layers
+            //Using the chance calculated above generate new layers
             while (Math.random() < chance) {
                 temp = new Node(num);
                 linkV(temp, head);
@@ -102,6 +110,7 @@ public class SkipList {
             }
 
             if (visited.isEmpty() && num < tail.getValue()) {
+                //If the number isn't the tail use this new layer generation
                 while (Math.random() < chance) {
                     Node temp = new Node(head.getValue());
                     linkV(temp, head);
@@ -117,6 +126,7 @@ public class SkipList {
                     levels++;
                 }
             } else if (visited.isEmpty()){
+                //If the number is the tail generate the new layer
                 while (Math.random() < chance) {
                     Node temp = new Node(head.getValue());
                     linkV(temp, head);
@@ -125,10 +135,6 @@ public class SkipList {
                     linkV(temp, tail);
                     linkH(head, temp);
                     tail = temp;
-                    temp = new Node(num);
-                    linkV(temp, lastChild);
-                    linkH(tail, temp);
-                    lastChild = temp;
                     levels++;
                 }
             }
@@ -151,6 +157,11 @@ public class SkipList {
         }
     }
 
+    /**
+     * Helper method used to link nodes vertically
+     * @param parent the parent node
+     * @param child the child node
+     */
     private void linkV(Node parent, Node child){
         if (parent== null || child == null){
             return;

@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 /**
  * Created by Brandon on 6/11/2016.
+ *
+ * The main list used to populate the skip list
  */
 public class Main {
 
@@ -27,12 +29,12 @@ public class Main {
 
         SkipList skippy = new SkipList(temp.remove(0), temp.remove(0));
 
+        //Add the integers to the skip list
         for (int i: temp){
             skippy.add(i);
-            skippy.printLevels();
-            System.out.println("===============================================================");
         }
 
+        //Print out the levels
         skippy.printLevels();
 
 
