@@ -31,11 +31,10 @@ public class Main {
             String[] seperated = s.split(" ");
 
             String first = seperated[0];
+            parents.put(first, first);
 
             for (int i=2; i < seperated.length; i+=2){
                 if (!visited.containsKey(seperated[i])) {
-                    parents.put(first, first);
-                    parents.put(seperated[i], seperated[i]);
                     edges.add(new Edge(first, Integer.parseInt(seperated[i-1]), seperated[i]));
                 }
             }
@@ -45,18 +44,26 @@ public class Main {
 
         Collections.sort(edges);
 
+        for (Edge e: edges){
+            System.out.println(e);
+        }
+
+        System.out.println("[==========================]");
+
         //Loop through the sorted edges and begin populating the minimum spanning tree.
         //Make sure no cycles form.
-
         for (int i=0; i < edges.size(); i++){
             Edge currentEdge = edges.get(i);
-            String lPNode1 = findLastParent(currentEdge.getNode1(), parents);
-            String lPNode2 = findLastParent(currentEdge.getNode2(), parents);
-            if (!lPNode1.equals(lPNode2)){
+            ParentInfo pI1 = findLastParent(currentEdge.getNode1(), parents);
+            ParentInfo pI2 = findLastParent(currentEdge.getNode2(), parents);
+            if (!pI1.parent.equals(pI2.parent)){
                 //Add edge to MST
                 //Update the hashmap (parent array)
-                System.out.println(currentEdge.getNode1() + "______" + currentEdge.getNode2() + "\n==========================");
-                if (parents.get(currentEdge.getNode1()).equals(currentEdge.getNode1())) {
+
+                System.out.println(currentEdge + "\n --------------------------");
+
+                //Join the smaller node chain to the larger one
+                if (pI1.count < pI2.count) {
                     parents.replace(currentEdge.getNode1(), currentEdge.getNode2());
                 } else {
                     parents.replace(currentEdge.getNode2(), currentEdge.getNode1());
@@ -64,15 +71,26 @@ public class Main {
             }
         }
 
+        System.out.println("[==========================]");
+
         for (String e: parents.keySet()){
-            System.out.println(e + "______" + parents.get(e));
+            System.out.println(e + "-" + parents.get(e));
         }
     }
 
-    public static String findLastParent(String node, HashMap<String, String> parents){
+    /**
+     * Find the last parent
+     * @param node the node you wish to find the last parent for
+     * @param parents the hashmap containing the parents
+     * @return ParentInfo, which contains the number of nodes to the last parent and the last parent
+     */
+    public static ParentInfo findLastParent(String node, HashMap<String, String> parents){
+        ParentInfo pI = new ParentInfo();
         while (!node.equals(parents.get(node))){
             node = parents.get(node);
+            pI.count++;
         }
-        return node;
+        pI.parent = node;
+        return pI;
     }
 }

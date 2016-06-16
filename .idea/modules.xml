@@ -6,8 +6,11 @@
       <module fileurl="file://$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" filepath="$PROJECT_DIR$/MyHeapSort/MyHeapSort.iml" />
       <module fileurl="file://$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" filepath="$PROJECT_DIR$/Project1_HeapSort/Project1_HeapSort.iml" />
       <module fileurl="file://$PROJECT_DIR$/Project2_HuffmanEncoding/Project2_HuffmanEncoding.iml" filepath="$PROJECT_DIR$/Project2_HuffmanEncoding/Project2_HuffmanEncoding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Project3_Kruskal/Project3_Kruskal.iml" filepath="$PROJECT_DIR$/Project3_Kruskal/Project3_Kruskal.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectB1_SkipList/ProjectB1_SkipList.iml" filepath="$PROJECT_DIR$/ProjectB1_SkipList/ProjectB1_SkipList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProjectB2_GrahamsScan/ProjectB2_GrahamsScan.iml" filepath="$PROJECT_DIR$/ProjectB2_GrahamsScan/ProjectB2_GrahamsScan.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectKruskalInclass/ProjectKruskalInclass.iml" filepath="$PROJECT_DIR$/ProjectKruskalInclass/ProjectKruskalInclass.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProjectRecurrenceInClass/ProjectRecurrenceInClass.iml" filepath="$PROJECT_DIR$/ProjectRecurrenceInClass/ProjectRecurrenceInClass.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" filepath="$PROJECT_DIR$/ProjectRecursionInClass/ProjectRecursionInClass.iml" />
       <module fileurl="file://$PROJECT_DIR$/ProjectTreeInClass/ProjectTreeInClass.iml" filepath="$PROJECT_DIR$/ProjectTreeInClass/ProjectTreeInClass.iml" />
     </modules>
