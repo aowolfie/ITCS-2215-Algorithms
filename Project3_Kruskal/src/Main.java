@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,15 +10,27 @@ import java.util.HashMap;
  */
 public class Main {
 
-    public static void main(String[] args){
-        String fileLines[] = new String[6];
+    private final static String FILE_NAME = "kruskalInput.txt";
 
-        fileLines[0] = "A 1 B 2 C 1 D";
-        fileLines[1] = "C 2 A 2 B 1 F 2 E 1 D";
-        fileLines[2] = "B 1 A 3 F 2 C";
-        fileLines[3] = "F 3 B 1 C 1 E";
-        fileLines[4] = "E 1 F 2 C 1 D";
-        fileLines[5] = "D 1 E 1 C 1 A";
+    public static void main(String[] args){
+
+        String[] fileLines = null;
+        int totalWeight = 0;
+
+        try {
+            FileReader fReader = new FileReader(FILE_NAME);
+            BufferedReader bReader = new BufferedReader(fReader);
+            ArrayList<String> lines = new ArrayList<>();
+            String line = null;
+            while ((line = bReader.readLine()) != null){
+                lines.add(line);
+            }
+            fileLines = lines.toArray(new String[lines.size()]);
+        } catch (Exception e){
+
+        }
+
+
 
         ArrayList<Edge> edges = new ArrayList<>();
         HashMap<String, Boolean> visited = new HashMap<>();
@@ -28,7 +42,7 @@ public class Main {
         HashMap<String, String> parents = new HashMap<>();
 
         for (String s: fileLines){
-            String[] seperated = s.split(" ");
+            String[] seperated = s.split(",");
 
             String first = seperated[0];
             parents.put(first, first);
@@ -61,6 +75,7 @@ public class Main {
                 //Update the hashmap (parent array)
 
                 System.out.println(currentEdge + "\n --------------------------");
+                totalWeight += currentEdge.getWeight();
 
                 //Join the smaller node chain to the larger one
                 if (pI1.count < pI2.count) {
@@ -71,11 +86,16 @@ public class Main {
             }
         }
 
+        System.out.println("Total Weight: " + totalWeight);
+
         System.out.println("[==========================]");
 
+        /*
         for (String e: parents.keySet()){
             System.out.println(e + "-" + parents.get(e));
         }
+        */
+
     }
 
     /**
