@@ -45,30 +45,34 @@ public class Main {
 
         PointC[] pointArray = points.toArray(new PointC[points.size()]);
 
-        Stack<PointC> s = scan(points);
-        PointC[] hullPoints = new PointC[s.size()];
-        s.toArray(hullPoints);
+        GraphInfo info = scan(points);
 
-        for (PointC c: hullPoints){
+        for (PointC c: info.getHull()){
             System.out.println(c);
         }
 
-        //while(!s.isEmpty()){
-         //   System.out.println(s.pop());
-        //}
+        System.out.println("Showing you the graph!");
 
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(PREF_W, PREF_H));
-        GrahamPanel panel = new GrahamPanel(pointArray, hullPoints);
-        frame.setResizable(false);
+        GrahamPanel panel = new GrahamPanel(info);
         panel.setPreferredSize(new Dimension(PREF_W, PREF_H));
         panel.setSize(new Dimension(PREF_W, PREF_H));
         frame.setSize(new Dimension(PREF_W, PREF_H));
         frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
-    public static Stack<PointC> scan(ArrayList<PointC> list){
+    public static GraphInfo scan(ArrayList<PointC> list){
+
+        GraphInfo info = new GraphInfo();
+        info.setPoints(list.toArray(new PointC[list.size()]));
+
+        info.setMaxX(list.get(0).getX());
+        info.setMaxY(list.get(0).getY());
+        info.setMinX(list.get(0).getX());
+        info.setMinY(list.get(0).getX());
 
         int index = 0;
         for (int i=0; i < list.size(); i++){
@@ -79,6 +83,21 @@ public class Main {
                     index = i;
                 }
             }
+
+            //This is used later when the graph is being drawn
+            if (info.getMaxX() < list.get(i).getX()){
+                info.setMaxX(list.get(i).getX());
+            } else if (info.getMinX() > list.get(i).getX()){
+                info.setMinX(list.get(i).getX());
+            }
+
+            if (info.getMaxY() < list.get(i).getY()){
+                info.setMaxY(list.get(i).getY());
+            } else if (info.getMinY() > list.get(i).getY()){
+                info.setMinY(list.get(i).getY());
+            }
+
+
         }
 
         PointC bL = list.remove(index);
@@ -86,7 +105,6 @@ public class Main {
         for (PointC pC: list){
             pC.calculateSlope(bL);
         }
-
 
         Stack<PointC> hull = new Stack<>();
         Collections.sort(list);
@@ -107,6 +125,9 @@ public class Main {
                 }
             }
         }
-        return hull;
+
+        info.setHull(hull.toArray(new PointC[hull.size()]));
+
+        return info;
     }
 }
