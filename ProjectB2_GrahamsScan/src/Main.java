@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -12,6 +14,9 @@ public class Main {
 
     //The file to read from
     private final static String FILE_NAME = "grahamsInput.txt";
+
+    private final static int PREF_W = 500;
+    private final static int PREF_H = 500;
 
     public static void main(String[] args){
 
@@ -38,17 +43,33 @@ public class Main {
             points.add(new PointC(Integer.parseInt(sep[0]), Integer.parseInt(sep[1])));
         }
 
-        ArrayList<PointC> pointsExtra = points;
+        PointC[] pointArray = points.toArray(new PointC[points.size()]);
 
-        Stack<PointC> s = scan(pointsExtra);
+        Stack<PointC> s = scan(points);
+        PointC[] hullPoints = new PointC[s.size()];
+        s.toArray(hullPoints);
 
-        while(!s.isEmpty()){
-            System.out.println(s.pop());
+        for (PointC c: hullPoints){
+            System.out.println(c);
         }
 
+        //while(!s.isEmpty()){
+         //   System.out.println(s.pop());
+        //}
+
+        JFrame frame = new JFrame();
+        frame.setPreferredSize(new Dimension(PREF_W, PREF_H));
+        GrahamPanel panel = new GrahamPanel(pointArray, hullPoints);
+        frame.setResizable(false);
+        panel.setPreferredSize(new Dimension(PREF_W, PREF_H));
+        panel.setSize(new Dimension(PREF_W, PREF_H));
+        frame.setSize(new Dimension(PREF_W, PREF_H));
+        frame.setContentPane(panel);
+        frame.setVisible(true);
     }
 
     public static Stack<PointC> scan(ArrayList<PointC> list){
+
         int index = 0;
         for (int i=0; i < list.size(); i++){
             if (list.get(i).getX() < list.get(index).getX()){
