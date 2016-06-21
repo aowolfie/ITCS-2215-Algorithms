@@ -10,6 +10,7 @@ import java.util.HashMap;
  */
 public class Main {
 
+    //The file to read from
     private final static String FILE_NAME = "kruskalInput.txt";
 
     public static void main(String[] args){
@@ -17,6 +18,7 @@ public class Main {
         String[] fileLines = null;
         int totalWeight = 0;
 
+        //Read in the file
         try {
             FileReader fReader = new FileReader(FILE_NAME);
             BufferedReader bReader = new BufferedReader(fReader);
@@ -58,18 +60,14 @@ public class Main {
 
         Collections.sort(edges);
 
-        for (Edge e: edges){
-            System.out.println(e);
-        }
-
         System.out.println("[==========================]");
 
         //Loop through the sorted edges and begin populating the minimum spanning tree.
         //Make sure no cycles form.
         for (int i=0; i < edges.size(); i++){
             Edge currentEdge = edges.get(i);
-            ParentInfo pI1 = findLastParent(currentEdge.getNode1(), parents);
-            ParentInfo pI2 = findLastParent(currentEdge.getNode2(), parents);
+            ParentInfo pI1 = findRoot(currentEdge.getNode1(), parents);
+            ParentInfo pI2 = findRoot(currentEdge.getNode2(), parents);
             if (!pI1.parent.equals(pI2.parent)){
                 //Add edge to MST
                 //Update the hashmap (parent array)
@@ -104,7 +102,7 @@ public class Main {
      * @param parents the hashmap containing the parents
      * @return ParentInfo, which contains the number of nodes to the last parent and the last parent
      */
-    public static ParentInfo findLastParent(String node, HashMap<String, String> parents){
+    public static ParentInfo findRoot(String node, HashMap<String, String> parents){
         ParentInfo pI = new ParentInfo();
         while (!node.equals(parents.get(node))){
             node = parents.get(node);
