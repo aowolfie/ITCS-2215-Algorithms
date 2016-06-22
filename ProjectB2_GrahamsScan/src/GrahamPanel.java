@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by brandonbeckwith on 6/21/16.
@@ -11,14 +10,13 @@ public class GrahamPanel extends JPanel {
     private PointC[] allPoints;
     private PointC[] hull;
     private int minX, maxX, minY, maxY;
-    private GraphInfo info;
 
     private static final Color POINT_COLOR = Color.BLACK;
     private static final Color AXIS_COLOR = Color.RED;
     private static final Color LINE_COLOR = Color.BLUE;
 
     public GrahamPanel(GraphInfo info){
-        this.info = info;
+        //Used the GraphInfo to populate the variables used to make the graph
         this.allPoints = info.getPoints();
         this.hull = info.getHull();
         this.minX = info.getMinX();
@@ -31,22 +29,19 @@ public class GrahamPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        //Calculate how big the border should be for the window
         int border = (int) (((this.getHeight() + this.getWidth()) / 2) * .05);
 
-        int canvasWidth = this.getWidth() - (2 * border);
-        int canvasHeight = this.getHeight() - (2 * border);
+        //Calculate the ratio needed to properly place the points
+        double ratioX = (this.getWidth() - (2 * border)) / (maxX - minX);
+        double ratioY = (this.getHeight() - (2 * border)) / (maxY - minY);
 
-
-        /* removed for now because it doesn't align correctly!
-        //Draw our axis
+        //Draw the x and y axis
         g.setColor(AXIS_COLOR);
-        g.drawLine(canvasWidth/2, border, canvasWidth/2, canvasHeight);
-        g.drawLine(border, canvasHeight/2, canvasWidth, canvasHeight/2);
-        */
+        g.drawLine((int) ( ratioX * (border + Math.abs(minX))), 0,(int) ( ratioX * (border + Math.abs(minX))), this.getHeight());
+        g.drawLine(0, (int) (ratioY * (border + Math.abs(minY))), this.getWidth(), (int) (ratioY * (border + Math.abs(minY))));
 
-        double ratioX = canvasWidth / (maxX - minX);
-        double ratioY = canvasHeight / (maxY - minY);
-
+        //Draw the points
         g.setColor(POINT_COLOR);
         int circleSize = (int) (((this.getHeight() + this.getHeight()) / 2) * .005);
 
@@ -54,9 +49,11 @@ public class GrahamPanel extends JPanel {
             g.fillOval((int) ( ratioX * (p.getX() + border + Math.abs(minX))), (int) (ratioY * (p.getY() + border + Math.abs(minY))), circleSize, circleSize);
         }
 
+        //Draw the hull
         g.setColor(LINE_COLOR);
         for (int i=0; i < hull.length; i++){
             if (i == hull.length - 1){
+                //Used to connect the last point to the first point
                 g.drawLine((int) ( ratioX * (hull[0].getX() + border + Math.abs(minX))) , (int) ( ratioY * (hull[0].getY() + border + Math.abs(minY))) , (int) ( ratioX * (hull[i].getX() + border + Math.abs(minX))) , (int)( ratioY * (hull[i].getY() + border + Math.abs(minY))) );
             } else {
                 g.drawLine((int) ( ratioX * (hull[i].getX() + border + Math.abs(minX))) , (int) ( ratioY * (hull[i].getY() + border + Math.abs(minY))) , (int) ( ratioX * (hull[i+1].getX() + border + Math.abs(minX))) , (int)( ratioY * (hull[i+1].getY() + border + Math.abs(minY))) );

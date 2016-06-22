@@ -1,7 +1,7 @@
-import java.util.Stack;
-
 /**
  * Created by brandonbeckwith on 6/21/16.
+ *
+ * A helper class used to pass information to the graph, not normally needed for the algorithm
  */
 public class GraphInfo {
 
@@ -30,19 +30,12 @@ public class GraphInfo {
         return minX;
     }
 
-    public void setMinX(int minX) {
-        this.minX = minX;
-    }
     public void setMinX(double minX) {
         this.minX = (int) minX;
     }
 
     public int getMaxX() {
         return maxX;
-    }
-
-    public void setMaxX(int maxX) {
-        this.maxX = maxX;
     }
 
     public void setMaxX(double maxX) {
@@ -53,20 +46,12 @@ public class GraphInfo {
         return minY;
     }
 
-    public void setMinY(int minY) {
-        this.minY = minY;
-    }
-
     public void setMinY(double minY) {
         this.minY = (int) minY;
     }
 
     public int getMaxY() {
         return maxY;
-    }
-
-    public void setMaxY(int maxY) {
-        this.maxY = maxY;
     }
 
     public void setMaxY(double maxY) {

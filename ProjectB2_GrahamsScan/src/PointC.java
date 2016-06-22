@@ -7,8 +7,10 @@ import java.awt.*;
  */
 public class PointC extends Point implements Comparable<PointC> {
 
+    //Used to store the slope for the compareTo method
     private double slope = 0;
 
+    //Call the parent constructor method
     public PointC(int x, int y){
         super(x,y);
     }
@@ -19,9 +21,9 @@ public class PointC extends Point implements Comparable<PointC> {
      * to the left of (counterclockwise),
      * or to the right of (clockwise) p2
      *
-     * @param p1
-     * @param p2
-     * @return
+     * @param p1 The point that we use as the reference line
+     * @param p2 The point that we want to find the relative position of
+     * @return 1 for clockwise, -1 for counter clockwise, 0 for parallel.
      */
     public int orientation(PointC p1, PointC p2){
         double xShift = this.getX() * -1;
